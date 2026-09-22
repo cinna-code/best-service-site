@@ -342,6 +342,28 @@ img {
   }
 }
 
+@media (max-width: 980px) and (min-width: 921px) {
+  nav {
+    gap: 1rem;
+  }
+
+  nav a {
+    white-space: nowrap;
+  }
+
+  .button-small {
+    gap: .7rem;
+    padding-right: .8rem;
+    padding-left: .8rem;
+  }
+}
+
+@media (max-width: 920px) {
+  .header nav {
+    display: none;
+  }
+}
+
 @media (max-width: 760px) {
   .hero-copy,
   .hero-actions {
@@ -469,7 +491,7 @@ img {
   }
 }
 
-/* Макет блока сертификатов: изображения документов будут добавлены позднее. */
+/* Галерея сертификатов и подтверждающих документов. */
 .certificates {
   padding: 6.25rem 0 6.75rem;
 }
@@ -506,13 +528,36 @@ img {
 }
 
 .certificate-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1.25rem;
   margin-top: 3.5rem;
 }
 
+.certificate-more {
+  margin-top: 3.25rem;
+  padding-top: 2rem;
+  border-top: 1px solid #c8d8dc;
+}
+
+.certificate-subhead {
+  margin: 0;
+  color: var(--blue);
+  font: 600 .68rem / 1 "Inter", Arial, sans-serif;
+  letter-spacing: .12em;
+}
+
+.certificate-grid--landscape {
+  margin-top: 1.5rem;
+}
+
+.certificate-grid--landscape .certificate-card {
+  flex-basis: min(30rem, calc((100% - 1.25rem) / 2));
+}
+
 .certificate-card {
+  flex: 0 1 min(20rem, calc((100% - 2.5rem) / 3));
   min-width: 0;
   padding: .8rem;
   border: 1px solid #c8d8dc;
@@ -598,6 +643,123 @@ img {
   letter-spacing: .08em;
 }
 
+/* Реальные документы: показываем сканы целиком, без декоративной заглушки. */
+.certificate-link {
+  display: block;
+  color: inherit;
+  cursor: zoom-in;
+  text-decoration: none;
+}
+
+.certificate-link:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: .35rem;
+}
+
+.certificate-frame.certificate-photo {
+  display: block;
+  min-height: 0;
+  aspect-ratio: 904 / 1280;
+  background: #fff;
+}
+
+.certificate-frame.certificate-landscape {
+  aspect-ratio: 1280 / 900;
+}
+
+.certificate-frame.certificate-photo::before,
+.certificate-frame.certificate-photo::after {
+  content: none;
+}
+
+.certificate-frame.certificate-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform .28s ease;
+}
+
+.certificate-card {
+  transition: transform .28s ease, box-shadow .28s ease;
+}
+
+.certificate-card:hover {
+  transform: translateY(-.25rem);
+  box-shadow: 0 .75rem 1.75rem rgba(0, 51, 102, .12);
+}
+
+/* Просмотр скана целиком по клику на карточку. */
+.certificate-viewer {
+  width: min(94vw, 72rem);
+  max-width: none;
+  max-height: 92dvh;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.certificate-viewer::backdrop {
+  background: rgba(0, 37, 78, .78);
+  backdrop-filter: blur(.2rem);
+}
+
+.certificate-viewer__panel {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: .75rem;
+  max-height: 92dvh;
+  padding: 1rem;
+  background: #fff;
+  box-shadow: 0 1.5rem 4rem rgba(0, 20, 44, .35);
+}
+
+.certificate-viewer__image {
+  display: block;
+  max-inline-size: 100%;
+  max-block-size: calc(86dvh - 4.5rem);
+  object-fit: contain;
+}
+
+.certificate-viewer__title {
+  max-width: calc(100% - 3.5rem);
+  margin: 0;
+  color: var(--ink);
+  font-size: .875rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.certificate-viewer__close {
+  position: absolute;
+  z-index: 1;
+  top: .5rem;
+  right: .5rem;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  font: 400 2rem / 1 Arial, sans-serif;
+  place-items: center;
+}
+
+.certificate-viewer__close:hover {
+  background: var(--ink);
+}
+
+.certificate-viewer__close:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: .25rem;
+}
+
 @media (max-width: 760px) {
   .certificates {
     padding: 4.5rem 0;
@@ -609,26 +771,55 @@ img {
   }
 
   .certificate-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
     margin-top: 2.25rem;
+  }
+
+  .certificate-grid--landscape {
+    margin-top: 1.25rem;
+  }
+
+  .certificate-more {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .certificate-card {
+    flex-basis: calc((100% - 1rem) / 2);
   }
 
   .certificate-frame {
     min-height: 13rem;
   }
+
+  .certificate-frame.certificate-photo {
+    min-height: 0;
+  }
 }
 
 @media (max-width: 560px) {
-  .certificate-grid {
-    grid-template-columns: 1fr;
+  .certificate-card {
+    flex-basis: 100%;
+    padding: .7rem;
   }
 
-  .certificate-card {
-    padding: .7rem;
+  .certificate-grid--landscape .certificate-card {
+    flex-basis: 100%;
   }
 
   .certificate-frame {
     min-height: 14rem;
+  }
+
+  .certificate-frame.certificate-photo {
+    min-height: 0;
+  }
+
+  .certificate-viewer__panel {
+    padding: .75rem;
+  }
+
+  .certificate-viewer__image {
+    max-block-size: calc(86dvh - 4rem);
   }
 }

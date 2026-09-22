@@ -74,7 +74,7 @@ class Command(BaseCommand):
             "certificates_eyebrow": "ДОКУМЕНТЫ И СТАТУСЫ",
             "certificates_title_line": "Подтверждённая",
             "certificates_title_accent": "экспертиза.",
-            "certificates_body": "Здесь будут представлены официальные сертификаты и подтверждения партнёрств Best Service.",
+            "certificates_body": "Официальные документы подтверждают квалификацию команды и статус партнёра Best Service.",
             "contact_eyebrow": "НАЧНЁМ С ДИАГНОСТИКИ",
             "contact_title_line": "Пора навести",
             "contact_title_accent": "порядок в IT.",
@@ -114,7 +114,6 @@ class Command(BaseCommand):
         logo_1c = self._image("1С — логотип", "1s-logo.png")
         logo_bitrix = self._image("Bitrix24 — логотип", "bitrix24-logo-eng.png")
         logo_zebra = self._image("Zebra — логотип", "zebra-logo2.png")
-
         settings = SiteSettings.for_site(site)
         if created or refresh:
             settings.logo = logo
@@ -154,7 +153,12 @@ class Command(BaseCommand):
         ]:
             manager.all().delete()
 
-        for label, anchor in [("Услуги", "#services"), ("Результат", "#result"), ("Партнёры", "#partners")]:
+        for label, anchor in [
+            ("Услуги", "#services"),
+            ("Результат", "#result"),
+            ("Партнёры", "#partners"),
+            ("Сертификаты", "#certificates"),
+        ]:
             NavigationItem.objects.create(page=page, label=label, anchor=anchor)
 
         for label in [
@@ -176,7 +180,7 @@ class Command(BaseCommand):
             ("WMS", "left"),
             ("TMS", "right"),
             ("CRM", "bottom"),
-            ("Mobile\nApps", "mobile"),
+            ("МП", "mobile"),
         ]:
             HeroSystemNode.objects.create(page=page, label=label, position=position)
 
@@ -220,11 +224,22 @@ class Command(BaseCommand):
         ]:
             Partner.objects.create(page=page, name=name, logo=logo, alt_text=alt)
 
-        for number in ["01", "02", "03"]:
+        for number, title, is_landscape in [
+            ("01", "Сертификат «1С:Профессионал»", False),
+            ("02", "Сертификат партнёра 1С, 2025", False),
+            ("03", "Официальный партнёр 1С", False),
+            ("04", "Торгово-складской функционал: УТ, КА и 1С:ERP", False),
+            ("05", "Управленческое лидерство", False),
+            ("06", "1С:Специалист — разработка и модификация", False),
+            ("07", "1С:Специалист — внедрение торговых решений", False),
+            ("08", "1С:Профессионал — торговля", False),
+            ("09", "Функциональный архитектор 1С", True),
+            ("10", "CAP — сертифицированный бухгалтер-практик", True),
+        ]:
             Certificate.objects.create(
                 page=page,
                 number=number,
-                title=f"СЕРТИФИКАТ {number}",
-                issuer="Best Service",
-                status="Добавим после получения",
+                title=title,
+                status=title,
+                is_landscape=is_landscape,
             )

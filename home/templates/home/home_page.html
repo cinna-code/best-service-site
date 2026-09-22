@@ -64,11 +64,51 @@
     <section class="certificates container" id="certificates">
       <div class="certificate-head"><p class="eyebrow"><span></span> {{ page.certificates_eyebrow }}</p><h2>{{ page.certificates_title_line }}<br /><em>{{ page.certificates_title_accent }}</em></h2><p>{{ page.certificates_body }}</p></div>
       <div class="certificate-grid" aria-label="{{ page.certificates_aria_label }}">
-        {% for certificate in page.certificates.all %}{% if certificate.show_on_site %}<article class="certificate-card" data-certificate-slot="{{ certificate.number }}">{% if certificate.document %}<a href="{{ certificate.document.url }}" target="_blank" rel="noopener">{% elif certificate.external_link %}<a href="{{ certificate.external_link }}" target="_blank" rel="noopener">{% endif %}<div class="certificate-frame">{% if certificate.thumbnail %}<img src="{{ certificate.thumbnail.file.url }}" alt="{{ certificate.title }}" />{% else %}<span>{{ certificate.title }}</span><strong>{{ certificate.issuer|default:site_settings.logo_alt }}</strong><p>{{ certificate.status }}</p>{% endif %}</div>{% if certificate.document or certificate.external_link %}</a>{% endif %}<div class="certificate-meta"><b>{{ certificate.number }}</b><span>{{ certificate.status }}</span></div></article>{% endif %}{% endfor %}
+        {% for certificate in portrait_certificates %}
+          <article class="certificate-card" data-certificate-slot="{{ certificate.number }}">
+            {% if certificate.thumbnail %}
+              <a class="certificate-link" href="{{ certificate.thumbnail.file.url }}" target="_blank" rel="noopener" aria-label="Открыть {{ certificate.title }}"><div class="certificate-frame certificate-photo"><img src="{{ certificate.thumbnail.file.url }}" alt="{{ certificate.title }}" /></div></a>
+            {% elif certificate.document %}
+              <a class="certificate-link" href="{{ certificate.document.url }}" target="_blank" rel="noopener" aria-label="Открыть {{ certificate.title }}"><div class="certificate-frame"><span>{{ certificate.title }}</span><strong>{{ certificate.issuer|default:site_settings.logo_alt }}</strong><p>{{ certificate.status }}</p></div></a>
+            {% elif certificate.external_link %}
+              <a class="certificate-link" href="{{ certificate.external_link }}" target="_blank" rel="noopener" aria-label="Открыть {{ certificate.title }}"><div class="certificate-frame"><span>{{ certificate.title }}</span><strong>{{ certificate.issuer|default:site_settings.logo_alt }}</strong><p>{{ certificate.status }}</p></div></a>
+            {% else %}
+              <div class="certificate-frame"><span>{{ certificate.title }}</span><strong>{{ certificate.issuer|default:site_settings.logo_alt }}</strong><p>{{ certificate.status }}</p></div>
+            {% endif %}
+            <div class="certificate-meta"><b>{{ certificate.number }}</b><span>{{ certificate.title }}</span></div>
+          </article>
+        {% endfor %}
       </div>
+      {% if landscape_certificates %}
+        <div class="certificate-more">
+          <div class="certificate-grid certificate-grid--landscape" aria-label="Дополнительные сертификаты Best Service">
+            {% for certificate in landscape_certificates %}
+              <article class="certificate-card" data-certificate-slot="{{ certificate.number }}">
+                {% if certificate.thumbnail %}
+                  <a class="certificate-link" href="{{ certificate.thumbnail.file.url }}" target="_blank" rel="noopener" aria-label="Открыть {{ certificate.title }}"><div class="certificate-frame certificate-photo certificate-landscape"><img src="{{ certificate.thumbnail.file.url }}" alt="{{ certificate.title }}" /></div></a>
+                {% elif certificate.document %}
+                  <a class="certificate-link" href="{{ certificate.document.url }}" target="_blank" rel="noopener" aria-label="Открыть {{ certificate.title }}"><div class="certificate-frame certificate-landscape"><span>{{ certificate.title }}</span><strong>{{ certificate.issuer|default:site_settings.logo_alt }}</strong><p>{{ certificate.status }}</p></div></a>
+                {% elif certificate.external_link %}
+                  <a class="certificate-link" href="{{ certificate.external_link }}" target="_blank" rel="noopener" aria-label="Открыть {{ certificate.title }}"><div class="certificate-frame certificate-landscape"><span>{{ certificate.title }}</span><strong>{{ certificate.issuer|default:site_settings.logo_alt }}</strong><p>{{ certificate.status }}</p></div></a>
+                {% else %}
+                  <div class="certificate-frame certificate-landscape"><span>{{ certificate.title }}</span><strong>{{ certificate.issuer|default:site_settings.logo_alt }}</strong><p>{{ certificate.status }}</p></div>
+                {% endif %}
+                <div class="certificate-meta"><b>{{ certificate.number }}</b><span>{{ certificate.title }}</span></div>
+              </article>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
     </section>
 
     <section class="contact container" id="contact"><div><p class="eyebrow light"><span></span> {{ page.contact_eyebrow }}</p><h2>{{ page.contact_title_line }}<br /><em>{{ page.contact_title_accent }}</em></h2></div><a class="contact-circle" href="{{ page.contact_button_link }}"><span>{{ page.contact_button_label|linebreaksbr }}</span><b>↗</b></a><p class="contact-note">{{ page.contact_note }}</p></section>
   </main>
   <footer class="footer container"><a class="logo" href="#top" aria-label="{{ site_settings.logo_alt }}"><span class="brand-logo">{% if site_settings.logo %}<img src="{{ site_settings.logo.file.url }}" alt="{{ site_settings.logo_alt }}" />{% else %}<img src="{% static 'home/best-service-logo-transparent.png' %}" alt="{{ site_settings.logo_alt }}" />{% endif %}</span></a><p>{{ site_settings.footer_tagline }}</p><p>{{ site_settings.copyright_text }}</p></footer>
+  <dialog class="certificate-viewer" aria-labelledby="certificate-viewer-title">
+    <div class="certificate-viewer__panel">
+      <button class="certificate-viewer__close" type="button" aria-label="Закрыть просмотр сертификата" autofocus>×</button>
+      <img class="certificate-viewer__image" alt="" />
+      <p class="certificate-viewer__title" id="certificate-viewer-title"></p>
+    </div>
+  </dialog>
 {% endblock %}

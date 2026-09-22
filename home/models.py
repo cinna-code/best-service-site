@@ -204,6 +204,14 @@ class HomePage(Page):
     def get_context(self, request, *args, **kwargs):
         context = super().get_context(request, *args, **kwargs)
         context["site_settings"] = SiteSettings.for_request(request)
+        context["portrait_certificates"] = self.certificates.filter(
+            show_on_site=True,
+            is_landscape=False,
+        )
+        context["landscape_certificates"] = self.certificates.filter(
+            show_on_site=True,
+            is_landscape=True,
+        )
         return context
 
 
@@ -289,6 +297,11 @@ class Partner(Orderable):
 class Certificate(Orderable):
     page = ParentalKey(HomePage, on_delete=models.CASCADE, related_name="certificates")
     number = models.CharField("Номер", max_length=12)
+    is_landscape = models.BooleanField(
+        "Горизонтальный формат",
+        default=False,
+        help_text="Включите для горизонтального сертификата: он появится отдельной строкой из двух карточек.",
+    )
     title = models.CharField("Название документа", max_length=255)
     issuer = models.CharField("Кем выдан / подпись", max_length=255, blank=True)
     status = models.CharField("Статус или дополнительная подпись", max_length=255, blank=True)
@@ -312,6 +325,7 @@ class Certificate(Orderable):
     show_on_site = models.BooleanField("Показывать на сайте", default=True)
     panels = [
         FieldPanel("number"),
+        FieldPanel("is_landscape"),
         FieldPanel("title"),
         FieldPanel("issuer"),
         FieldPanel("status"),

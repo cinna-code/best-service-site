@@ -52,3 +52,44 @@ window.addEventListener('resize', refreshTicker, { passive: true });
 if (document.fonts?.ready) {
   document.fonts.ready.then(refreshTicker);
 }
+
+const certificateViewer = document.querySelector('.certificate-viewer');
+const certificateViewerImage = certificateViewer?.querySelector('.certificate-viewer__image');
+const certificateViewerTitle = certificateViewer?.querySelector('.certificate-viewer__title');
+const certificateViewerClose = certificateViewer?.querySelector('.certificate-viewer__close');
+let certificateViewerTrigger = null;
+
+const closeCertificateViewer = () => {
+  if (certificateViewer?.open) certificateViewer.close();
+};
+
+document.querySelectorAll('.certificate-link').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    if (!certificateViewer || !certificateViewerImage || !certificateViewerTitle) return;
+
+    const certificateImage = link.querySelector('img');
+    if (!certificateImage) return;
+
+    event.preventDefault();
+    certificateViewerTrigger = link;
+    certificateViewerImage.src = link.href;
+    certificateViewerImage.alt = certificateImage.alt;
+    certificateViewerTitle.textContent = certificateImage.alt;
+    certificateViewer.showModal();
+  });
+});
+
+certificateViewerClose?.addEventListener('click', closeCertificateViewer);
+
+certificateViewer?.addEventListener('click', (event) => {
+  if (event.target === certificateViewer) closeCertificateViewer();
+});
+
+certificateViewer?.addEventListener('close', () => {
+  certificateViewerImage?.removeAttribute('src');
+  if (certificateViewerImage) certificateViewerImage.alt = '';
+  if (certificateViewerTitle) certificateViewerTitle.textContent = '';
+  certificateViewerTrigger?.focus();
+  certificateViewerTrigger = null;
+});
